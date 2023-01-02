@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Template Generator</title>
+	<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<style>
+	.childDivA, .childDivB{
+		display: inline-grid;
+		width: 48%;
+		margin: 5px;
+	}
+	.childDivB{
+		float: right;
+	}
+	</style>
+</head>
+<body>
+	<div class="main">
+		<form name="template-form" id="template-form" class="childDivA">
+			<label>Input:</label>
+			<textarea rows="30" cols="90" id="txtArea" placeholder="Your input text goes here..." required></textarea>
+			<div class="envSource">
+				<label>Source:</label>
+				<input type="radio" name="sourceEnv" value="1" checked /> QA
+				<input type="radio" name="sourceEnv" value="2"/> STG
+				<input type="radio" name="sourceEnv" value="3"/> PROD
+			</div>
+			<div class="envDest">
+				<label>Destination:</label>
+				<input type="radio" name="destinationEnv" value="1"/> QA
+				<input type="radio" name="destinationEnv" value="2" checked /> STG
+				<input type="radio" name="destinationEnv" value="3"/> PROD
+			</div><br>
+			<input type="submit" value="Convert">
+		</form>
+		<div class="childDivB">
+			<label>Output:</label>
+			<textarea rows="30" cols="90" id="txtAreaOutput" placeholder="Output text gets converted here..."></textarea>
+		</div>
+	</div>
+</body>
+<script>
+    $(document).ready(function () {
+        $("#template-form").submit(function (e) {
+			e.preventDefault();
+			let origString = $("#txtArea").val();
+			let result = gfg();
+			$("#txtAreaOutput").val(result);
+			$('.result .childDivA').html(origString); 
+			$('.result .childDivB').html(result); 
+        });
+    });
+	
+	var storeIds = [
+		["us", 24, 18, 81],
+		["uk", 30, 34, 43],
+		["ca_fr", 28, 41, 14],
+		["ca_en", 31, 28, 82],
+    ];
+	
+	function gfg() {
+		let string = $("#txtArea").val();
+		let sourceEnv = $("input:radio[name=sourceEnv]:checked").val();
+		let destinationEnv = $("input:radio[name=destinationEnv]:checked").val();
+		
+		for(var i = 0; i < storeIds.length; i++) {
+			string = string.replace('store.getStoreId()='+storeIds[i][sourceEnv] +'}}', 'store.getStoreId()='+storeIds[i][destinationEnv]+'}}');
+		}
+		return string;
+	}
+	
+</script>
+</html>
